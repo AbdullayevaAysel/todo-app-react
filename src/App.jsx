@@ -2,22 +2,21 @@ import { useEffect, useState } from "react"
 import { FiPlus } from "react-icons/fi"
 import { nanoid } from "nanoid"
 import TodoList from "./components/TodoList"
+import Notification from "./components/Notification"
 
 function App() {
-
-  let localTodos = JSON.parse(localStorage.getItem("todos"));
-  let color = JSON.parse(localStorage.getItem("thema"));
+  let localTodos = JSON.parse(localStorage.getItem("todos"))
+  let color = JSON.parse(localStorage.getItem("thema"))
   const [thema, setThema] = useState(color || "light")
   const [todos, setTodos] = useState(localTodos || [])
   const [todo, setTodo] = useState("")
-  const [complated, setComplated] = useState(false)
 
   useEffect(() => {
     localStorage.setItem("thema", JSON.stringify(thema))
     if (thema == "dark") {
-      document.documentElement.classList.add("dark")
+      document.body.classList.add("dark")
     } else {
-      document.documentElement.classList.remove("dark")
+      document.body.classList.remove("dark")
     }
   }, [thema])
 
@@ -27,18 +26,20 @@ function App() {
 
   const handleThema = () => {
     setThema(thema == "light" ? "dark" : "light")
-    console.log(thema)
-    console.log(todos)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    todo !== "" && setTodos((todos) => [{
-      id: nanoid(),
-      name: todo,
-      complated: complated
-    }, ...todos])
-    
+    todo !== "" &&
+      setTodos((todos) => [
+        {
+          id: nanoid(),
+          name: todo,
+          completed: false,
+        },
+        ...todos,
+      ])
+
     setTodo("")
   }
 
@@ -67,9 +68,9 @@ function App() {
             id="addTodo"
             placeholder="Create a new todo..."
             autoComplete="given-name"
-            className="block w-full  p-4 text-[18px] outline-none dark:bg-very-dark-desaturated-blue dark:text-very-light-grayish-blue"
+            className="block w-full rounded p-4 text-[18px] outline-none dark:bg-very-dark-desaturated-blue dark:text-very-light-grayish-blue"
             value={todo}
-            onChange={(e) =>  setTodo(e.target.value)}
+            onChange={(e) => setTodo(e.target.value)}
           />
           <button
             className="absolute right-[20px] top-[50%] translate-y-[-50%] text-very-light-gray bg-check-background bg-cover rounded-full tracking-wide uppercase font-josefin-sans cursor-pointer text-30 text-center flex items-center justify-center w-[30px] h-[30px]"
@@ -79,7 +80,7 @@ function App() {
           </button>
         </form>
 
-        <TodoList todos={todos} setTodos={setTodos} complated={complated} setComplated={setComplated} />
+        <TodoList todos={todos} setTodos={setTodos} />
       </section>
     </div>
   )
