@@ -1,7 +1,7 @@
-const Notification = ({val, text}) => {
+const Notification = ({ message}) => {
   return <>
   <div className="absolute bg-[#fff] p-3 shadow-lg bottom-5 right-5">
-    {val} {text}
+     {message}
   </div>
   </>
 }

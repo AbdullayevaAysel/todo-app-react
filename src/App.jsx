@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { FiPlus } from "react-icons/fi"
 import { nanoid } from "nanoid"
 import TodoList from "./components/TodoList"
+import UseNotification from "./components/UseNotification"
 import Notification from "./components/Notification"
 
 function App() {
@@ -10,6 +11,8 @@ function App() {
   const [thema, setThema] = useState(color || "light")
   const [todos, setTodos] = useState(localTodos || [])
   const [todo, setTodo] = useState("")
+
+  const { notification, showNotification } = UseNotification()
 
   useEffect(() => {
     localStorage.setItem("thema", JSON.stringify(thema))
@@ -39,6 +42,8 @@ function App() {
         },
         ...todos,
       ])
+
+    showNotification(`${todo} todo elave olundu`)
 
     setTodo("")
   }
@@ -80,8 +85,18 @@ function App() {
           </button>
         </form>
 
-        <TodoList todos={todos} setTodos={setTodos} />
+        <TodoList
+          todos={todos}
+          setTodos={setTodos}
+          showNotification={showNotification}
+        />
       </section>
+
+      {notification && (
+        <div className="notification-container">
+          <Notification message={notification} />
+        </div>
+      )}
     </div>
   )
 }

@@ -9,15 +9,19 @@ const TodoItem = ({ val, id, check, handleDelete, handleChecked }) => {
             check ? "bg-check-background bg-cover" : "border"
           } dark:border-dark-grayish-blue-2 flex items-center justify-center w-[20px] h-[20px] rounded-full me-2`}
         >
-          <div className={`${check && 'bg-icon-check'} bg-no-repeat w-[10px] h-[10px]`}></div>
+          <div
+            className={`${
+              check && "bg-icon-check"
+            } bg-no-repeat w-[10px] h-[10px]`}
+          ></div>
         </button>
         <div className="overflow-hidden w-90">
-          <p className={`${check && 'line-through'} truncate`}>{val}</p>
+          <p className={`${check && "line-through"} truncate`}>{val}</p>
         </div>
       </div>
       <div
         className=" bg-icon-cross w-[20px] h-[20px] bg-no-repeat cursor-pointer"
-        onClick={() => handleDelete(id)}  
+        onClick={() => handleDelete(id)}
       ></div>
     </li>
   )
