@@ -1,42 +1,13 @@
-import { useMemo, useState } from "react"
+import useTodoFilter from "../utils/useTodoFilter"
+import TodoFilter from "./TodoFilter"
 import TodoItem from "./TodoItem"
-import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"
 
-const initialTasks = [
-  {
-    id: 1,
-    title: "Task 1",
-  },
-  {
-    id: 2,
-    title: "Task 2",
-  },
-  {
-    id: 3,
-    title: "Task 3",
-  },
-]
-
-const TodoList = ({ todos, setTodos, showNotification }) => {
-  const [animationParent] = useAutoAnimate()
-  const [tab, setTab] = useState("all")
-
-  const visibleTodos = useMemo(() => {
-    return todos.filter((todo) => {
-      if (tab === "all") {
-        return true
-      } else if (tab === "active") {
-        return !todo.completed
-      } else if (tab === "completed") {
-        return todo.completed
-      }
-    })
-  }, [todos, tab])
+const TodoList = ({ todos, setTodos }) => {
+  const { visibleTodos } = useTodoFilter(todos)
 
   const handleDelete = (id) => {
     setTodos((todos) => todos?.filter((todo) => todo.id !== id))
-    showNotification("todo silindi")
   }
 
   const handleChecked = (id, check) => {
@@ -47,11 +18,6 @@ const TodoList = ({ todos, setTodos, showNotification }) => {
       return todo
     })
     setTodos(newTodos)
-  }
-
-  const handleClearCompleted = () => {
-    setTodos((todos) => todos?.filter((todo) => todo.completed === false))
-    showNotification("completed olunmus todolar silindi")
   }
 
   const onDragEnd = (result) => {
@@ -70,7 +36,7 @@ const TodoList = ({ todos, setTodos, showNotification }) => {
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             <ul className=" overflow-hidden mt-5 rounded font-semibold capitalize shadow-lg bg-[#fff] dark:bg-very-dark-desaturated-blue">
-              {visibleTodos.map((todo, index) => (
+              {visibleTodos?.map((todo, index) => (
                 <Draggable
                   key={todo.id}
                   draggableId={todo.id.toString()}
@@ -95,36 +61,7 @@ const TodoList = ({ todos, setTodos, showNotification }) => {
                 </Draggable>
               ))}
               {provided.placeholder}
-              <div className="flex justify-between p-4 text-dark-grayish-blue text-[14px] dark:bg-very-dark-desaturated-blue">
-                <div>
-                  {" "}
-                  {todos.length > 0 ? `items: ${todos.length}` : "items left"}
-                </div>
-                <div className="flex justify-center gap-3">
-                  <div className="cursor-pointer" onClick={() => setTab("all")}>
-                    All
-                  </div>
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => setTab("active")}
-                  >
-                    Active
-                  </div>
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => setTab("completed")}
-                  >
-                    Completed
-                  </div>
-                </div>
-
-                <div
-                  className="cursor-pointer"
-                  onClick={() => handleClearCompleted()}
-                >
-                  Clear Completed
-                </div>
-              </div>
+              <TodoFilter setTodos={setTodos} todos={todos} />
             </ul>
           </div>
         )}
